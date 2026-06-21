@@ -466,6 +466,7 @@
         <span class="tile purple" id="ic-log"></span>
         <div><div class="tt">기록</div><div class="ss">날짜별 감성큐기 일기 · 이 기기에 저장돼요</div></div>
       </div>
+      <button class="btn btn-ghost btn-sm" id="resetBtn" style="color:var(--danger)">이 기기 기록 전체 초기화</button>
     </div>
     <div id="logList"></div>
   </section>
@@ -1120,6 +1121,16 @@ const BOOKMAP={}; BOOKS.forEach(g=>g.list.forEach(b=>BOOKMAP[b[0]]={k:b[1],c:b[2
     if(read && !loaded){ loaded=true; load(); }
   });
 })();
+
+/* ---------- 기록 전체 초기화 ---------- */
+document.getElementById('resetBtn').onclick=()=>{
+  if(!confirm('이 기기에 저장된 모든 기록(감사·성경·큐티·기도·말씀·기록)을 지울까요?\n되돌릴 수 없어요.')) return;
+  try{ Object.keys(localStorage).filter(k=>k.indexOf('gqt_')===0).forEach(k=>localStorage.removeItem(k)); }catch(e){}
+  ['moodText','situText','grat1','grat2','grat3','prayInput','oiaO','oiaI','oiaA','shareText'].forEach(id=>{const e=document.getElementById(id); if(e)e.value='';});
+  const vsSlot=document.getElementById('verseSlot'); if(vsSlot) vsSlot.innerHTML='';
+  initGrat(); renderQt(); renderPray(); renderPrayToggle(); syncQt(); buildLog(); trackStreak();
+  toast('이 기기의 기록을 모두 초기화했어요');
+};
 
 /* ---------- 초기 렌더 ---------- */
 initGrat(); renderQt(); renderPray(); renderPrayToggle(); syncQt();
