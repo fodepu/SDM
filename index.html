@@ -137,6 +137,26 @@
   .vref{margin-top:15px;color:var(--primary);font-size:14px;font-weight:700;}
   .vintro{font-size:14px;color:var(--ink2);font-weight:500;line-height:1.62;margin-bottom:2px;}
   .vread{margin-top:9px;font-size:12.5px;color:var(--ink3);font-weight:700;background:var(--field);display:inline-block;padding:5px 12px;border-radius:999px;}
+  /* 성경 읽기 */
+  .seg{display:flex;gap:5px;background:var(--field);border-radius:14px;padding:5px;margin:14px 0 2px;}
+  .seg-b{flex:1;border:none;background:none;border-radius:10px;padding:10px;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;transition:.16s;}
+  .seg-b.on{background:#fff;color:var(--primary);box-shadow:0 2px 8px rgba(70,74,48,.10);}
+  .read-pickers{display:flex;gap:9px;}
+  .read-pickers select{flex:1;background:var(--field);border:1.5px solid transparent;border-radius:13px;color:var(--ink);
+    font-family:var(--sans);font-size:15px;font-weight:600;padding:12px 12px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239a9c84' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+  .read-pickers select#bookSel{flex:1.5;}
+  .read-pickers select:focus{border-color:var(--primary);background-color:#fff;}
+  .read-head{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+  .read-hint{font-size:12px;color:var(--ink3);font-weight:500;margin-bottom:12px;}
+  .rv{font-family:var(--serif);font-size:15.5px;line-height:1.78;color:var(--ink);padding:5px 9px;border-radius:9px;cursor:pointer;transition:.12s;margin-bottom:1px;}
+  .rv:active{transform:scale(.995);}
+  .rv b{font-size:.78em;font-weight:800;color:var(--primary);margin-right:5px;vertical-align:1px;}
+  .rv.sel{background:var(--primary-soft);}
+  .rv.ends{background:var(--primary);color:#fff;}
+  .rv.ends b{color:#fff;}
+  .read-actions{position:sticky;bottom:96px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:var(--shadow);}
+  #readSelInfo{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;text-align:center;}
   .vver{color:var(--ink3);font-size:11.5px;font-weight:500;}
   .reflect{margin-top:17px;padding-top:17px;border-top:1px solid var(--line);}
   .reflect .rl{font-size:11.5px;letter-spacing:.04em;font-weight:800;margin-bottom:5px;text-transform:uppercase;}
@@ -297,21 +317,55 @@
 
   <!-- ========== 오늘의 말씀 (홈) ========== -->
   <section class="view on" id="v-home">
-    <div class="card" id="askCard">
-      <div class="chead">
-        <span class="tile amber" id="ic-sun"></span>
-        <div><div class="tt">오늘, 마음이 어떠세요?</div><div class="ss">지금 마음을 자유롭게 적어보세요.</div></div>
-      </div>
-      <textarea id="moodText" rows="2" placeholder="오늘 마음이 어떠세요? (예: 불안하고 지쳐요)"></textarea>
-      <h2 class="sec" style="margin-top:16px">무슨 일이 마음에 있나요?</h2>
-      <p class="hint">선택 사항이에요 · 안 적어도 됩니다</p>
-      <textarea id="situText" rows="2" placeholder="무슨 일이 있나요? (예: 시험이 코앞이에요)" style="margin-top:4px"></textarea>
-      <button class="btn btn-primary" id="getVerse" style="margin-top:14px">
-        오늘의 말씀 받기
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
+    <div class="seg">
+      <button class="seg-b on" data-mode="reco">오늘의 말씀</button>
+      <button class="seg-b" data-mode="read">성경 읽기</button>
     </div>
-    <div id="verseSlot"></div>
+
+    <div id="home-reco">
+      <div class="card" id="askCard">
+        <div class="chead">
+          <span class="tile amber" id="ic-sun"></span>
+          <div><div class="tt">오늘, 마음이 어떠세요?</div><div class="ss">지금 마음을 자유롭게 적어보세요.</div></div>
+        </div>
+        <textarea id="moodText" rows="2" placeholder="오늘 마음이 어떠세요? (예: 불안하고 지쳐요)"></textarea>
+        <h2 class="sec" style="margin-top:16px">무슨 일이 마음에 있나요?</h2>
+        <p class="hint">선택 사항이에요 · 안 적어도 됩니다</p>
+        <textarea id="situText" rows="2" placeholder="무슨 일이 있나요? (예: 시험이 코앞이에요)" style="margin-top:4px"></textarea>
+        <button class="btn btn-primary" id="getVerse" style="margin-top:14px">
+          오늘의 말씀 받기
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div id="verseSlot"></div>
+    </div>
+
+    <div id="home-read" hidden>
+      <div class="card">
+        <div class="chead">
+          <span class="tile blue" id="ic-read"></span>
+          <div><div class="tt">성경 읽기</div><div class="ss">개역한글판 · 책·장을 골라 읽고 공유</div></div>
+        </div>
+        <div class="read-pickers">
+          <select id="bookSel"></select>
+          <select id="chapSel"></select>
+        </div>
+        <div id="readStatus" class="hint" style="margin-top:9px"></div>
+      </div>
+      <div class="card" id="readCard" hidden>
+        <div id="readHead" class="read-head"></div>
+        <div class="read-hint">절을 톡 누르면 선택돼요. 시작 절~끝 절을 고른 뒤 아래 버튼으로 나눔에 담으세요.</div>
+        <div id="readBody"></div>
+      </div>
+      <div id="readActions" class="read-actions" hidden>
+        <div id="readSelInfo"></div>
+        <div class="btn-row">
+          <button class="btn btn-ghost btn-sm" id="shareRangeBtn">읽기 범위만 나눔에</button>
+          <button class="btn btn-primary btn-sm" id="shareTextBtn">본문 그대로 나눔에</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="readClearBtn" style="margin-top:8px">선택 해제</button>
+      </div>
+    </div>
   </section>
 
   <!-- ========== 감사일기 ========== -->
@@ -468,6 +522,7 @@ document.getElementById('ic-su').innerHTML=ICON.link;
 document.getElementById('nv-log').innerHTML=ICON.log;
 document.getElementById('ic-log').innerHTML=ICON.log;
 document.getElementById('ic-clock').innerHTML=ICON.clock;
+document.getElementById('ic-read').innerHTML=ICON.book;
 
 /* ---------- 저장소 ---------- */
 const DB={
@@ -705,7 +760,7 @@ const KW=[
   ["무기력",["무기력","의욕","의미 없","의미가 없","공허","허무","멍","늘어","쳐져","처져","귀찮","하기 싫","아무것도","무의미","무료"]],
   ["슬픔",["슬퍼","슬프","슬픔","눈물","울적","속상","서러","울고","울었","마음이 아"]],
   ["낙심",["낙심","우울","좌절","의기소침","실망","절망","무너","포기","상실","의기"]],
-  ["두려움",["두려","무서","무섭","겁나","겁이","겁난","공포"]],
+  ["두려움",["두려","무서","무섭","겁나","겁이","겁난","공포","발표","면접","무대","시험","긴장","흥분","앞두","들떠","떨려","경기","시합","오디션"]],
   ["외로움",["외로","혼자","쓸쓸","고독","허전","소외","아무도"]],
   ["죄책감",["죄책","잘못","부끄","후회","자책","찔려","죄송","미안","수치","창피"]],
   ["혼란",["혼란","막막","모르겠","갈피","헷갈","갈팡","답답","복잡","어떻게 해","어쩌","뒤죽박죽","싱숭"]],
@@ -889,12 +944,19 @@ function compileShare(){
   L.push('✝ 감사일기 :');
   if(grat.length) grat.forEach((x,i)=>L.push(`${i+1}. ${x}`)); else L.push('1. ');
   const tv=DB.get('todayVerse',null);
-  L.push('📚성경 : ' + (tv ? (tv.read||tv.ref) : ''));
+  const sr=DB.get('shareRange',null);
+  const bibleRef=(sr && sr.d===fmtDay(d) && sr.text) ? sr.text : (tv ? (tv.read||tv.ref) : '');
+  L.push('📚성경 : ' + bibleRef);
   const qt=DB.get('qt',[]).filter(e=>isToday(e.t));
   const qtRef= effectivePassage() || (qt.length ? (qt[0].ref||(tv?tv.ref:'')) : (tv?tv.ref:''));
   L.push(`🌱큐티 : ${qtRef}`);
   if(qt.length && qt[0].a) L.push(qt[0].a);
   L.push(`🙏기도 : ${prayDoneOf(fmtDay(d))?'O':'X'}`);
+  const stx=DB.get('shareText',null);
+  if(stx && stx.d===fmtDay(d) && stx.items && stx.items.length){
+    L.push(''); L.push('📖 나눔 말씀');
+    stx.items.forEach(it=>L.push(`“${it.text}” (${it.ref})`));
+  }
   return L.join('\n');
 }
 /* 오늘의 매일성경 표시 + 본문 직접수정 저장 */
@@ -973,6 +1035,84 @@ function sermonLines(text){  // 절마다 번갈아 색 (번갈아 읽기용)
     img.addEventListener('error',()=>{ img.hidden=true; if(ph) ph.hidden=false; });
     img.addEventListener('click',()=>window.open(img.src,'_blank'));
   }
+})();
+
+/* ---------- 성경 읽기 (개역한글, jsDelivr 런타임 로드) ---------- */
+const BOOKS=[
+ {t:'구약',list:[['gn','창세기',50],['ex','출애굽기',40],['lv','레위기',27],['nm','민수기',36],['dt','신명기',34],
+  ['js','여호수아',24],['jud','사사기',21],['rt','룻기',4],['1sm','사무엘상',31],['2sm','사무엘하',24],
+  ['1kgs','열왕기상',22],['2kgs','열왕기하',25],['1ch','역대상',29],['2ch','역대하',36],['ezr','에스라',10],
+  ['ne','느헤미야',13],['et','에스더',10],['job','욥기',42],['ps','시편',150],['prv','잠언',31],
+  ['ec','전도서',12],['so','아가',8],['is','이사야',66],['jr','예레미야',52],['lm','예레미야애가',5],
+  ['ez','에스겔',48],['dn','다니엘',12],['ho','호세아',14],['jl','요엘',3],['am','아모스',9],
+  ['ob','오바댜',1],['jn','요나',4],['mi','미가',7],['na','나훔',3],['hk','하박국',3],
+  ['zp','스바냐',3],['hg','학개',2],['zc','스가랴',14],['ml','말라기',4]]},
+ {t:'신약',list:[['mt','마태복음',28],['mk','마가복음',16],['lk','누가복음',24],['jo','요한복음',21],['act','사도행전',28],
+  ['rm','로마서',16],['1co','고린도전서',16],['2co','고린도후서',13],['gl','갈라디아서',6],['eph','에베소서',6],
+  ['ph','빌립보서',4],['cl','골로새서',4],['1ts','데살로니가전서',5],['2ts','데살로니가후서',3],['1tm','디모데전서',6],
+  ['2tm','디모데후서',4],['tt','디도서',3],['phm','빌레몬서',1],['hb','히브리서',13],['jm','야고보서',5],
+  ['1pe','베드로전서',5],['2pe','베드로후서',3],['1jo','요한일서',5],['2jo','요한이서',1],['3jo','요한삼서',1],
+  ['jd','유다서',1],['re','요한계시록',22]]}
+];
+const BOOKMAP={}; BOOKS.forEach(g=>g.list.forEach(b=>BOOKMAP[b[0]]={k:b[1],c:b[2]}));
+(function initReader(){
+  const bookSel=document.getElementById('bookSel'), chapSel=document.getElementById('chapSel');
+  const readStatus=document.getElementById('readStatus'), readCard=document.getElementById('readCard');
+  const readHead=document.getElementById('readHead'), readBody=document.getElementById('readBody');
+  const readActions=document.getElementById('readActions'), readSelInfo=document.getElementById('readSelInfo');
+  let cur={id:'jo',ch:1}, cache={}, anchor=null, selA=null, selB=null;
+  BOOKS.forEach(g=>{ const og=document.createElement('optgroup'); og.label=g.t;
+    g.list.forEach(b=>{ const o=document.createElement('option'); o.value=b[0]; o.textContent=b[1]; og.appendChild(o); });
+    bookSel.appendChild(og); });
+  function fillChap(){ const c=BOOKMAP[cur.id].c; chapSel.innerHTML='';
+    for(let i=1;i<=c;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i+'장'; chapSel.appendChild(o); } chapSel.value=cur.ch; }
+  async function fetchBook(id){ if(cache[id]) return cache[id];
+    const urls=[`https://cdn.jsdelivr.net/gh/MaatheusGois/bible@main/versions/ko/ko/${id}/${id}.json`,
+                `https://raw.githubusercontent.com/MaatheusGois/bible/main/versions/ko/ko/${id}/${id}.json`];
+    let err;
+    for(const u of urls){ try{ const r=await fetch(u); if(r.ok){ const d=await r.json(); cache[id]=d; return d; } }catch(e){ err=e; } }
+    throw err||new Error('load fail'); }
+  function clearSel(){ anchor=null; selA=selB=null; paint(); }
+  function paint(){
+    const a=selA==null?null:Math.min(selA,selB), b=selA==null?null:Math.max(selA,selB);
+    readBody.querySelectorAll('.rv').forEach(el=>{ const v=+el.dataset.v; el.classList.remove('sel','ends');
+      if(a!=null && v>=a && v<=b) el.classList.add('sel');
+      if((v===a||v===b) && a!==b) el.classList.add('ends'); });
+    if(selA==null){ readActions.hidden=true; }
+    else { readActions.hidden=false; const k=BOOKMAP[cur.id].k;
+      readSelInfo.textContent = a===b ? `${k} ${cur.ch}:${a}` : `${k} ${cur.ch}:${a}-${b} (${b-a+1}절)`; }
+  }
+  function tap(v){ if(anchor===null){ anchor=v; selA=v; selB=v; } else { selA=anchor; selB=v; anchor=null; } paint(); }
+  async function load(){
+    readStatus.textContent='불러오는 중…'; readCard.hidden=true; readActions.hidden=true;
+    try{ const d=await fetchBook(cur.id); const vs=(d.chapters&&d.chapters[cur.ch-1])||[];
+      readHead.textContent=`${BOOKMAP[cur.id].k} ${cur.ch}장 · 개역한글판`;
+      readBody.innerHTML=vs.map((t,i)=>`<div class="rv" data-v="${i+1}"><b>${i+1}</b>${esc(t)}</div>`).join('');
+      readBody.querySelectorAll('.rv').forEach(el=>el.onclick=()=>tap(+el.dataset.v));
+      readCard.hidden=false; readStatus.textContent=''; clearSel();
+    }catch(e){ readStatus.textContent='본문을 불러오지 못했어요(인터넷 확인). 잠시 후 다시 시도해주세요.'; }
+  }
+  bookSel.value=cur.id; fillChap();
+  bookSel.onchange=()=>{ cur.id=bookSel.value; cur.ch=1; fillChap(); load(); };
+  chapSel.onchange=()=>{ cur.ch=+chapSel.value; load(); };
+  document.getElementById('readClearBtn').onclick=clearSel;
+  document.getElementById('shareRangeBtn').onclick=()=>{ if(selA==null) return;
+    const k=BOOKMAP[cur.id].k, a=Math.min(selA,selB), b=Math.max(selA,selB);
+    DB.set('shareRange',{d:fmtDay(new Date()),text:(a===b?`${k} ${cur.ch}:${a}`:`${k} ${cur.ch}:${a}-${b}`)});
+    toast('읽기 범위를 나눔에 담았어요'); };
+  document.getElementById('shareTextBtn').onclick=()=>{ if(selA==null) return;
+    const k=BOOKMAP[cur.id].k, a=Math.min(selA,selB), b=Math.max(selA,selB);
+    const vs=(cache[cur.id]&&cache[cur.id].chapters&&cache[cur.id].chapters[cur.ch-1])||[];
+    const items=[]; for(let v=a;v<=b;v++){ if(vs[v-1]) items.push({ref:`${k} ${cur.ch}:${v}`,text:vs[v-1]}); }
+    DB.set('shareText',{d:fmtDay(new Date()),items}); toast(`본문 ${items.length}절을 나눔에 담았어요`); };
+  let loaded=false;
+  document.querySelectorAll('.seg-b').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.seg-b').forEach(x=>x.classList.toggle('on',x===b));
+    const read=b.dataset.mode==='read';
+    document.getElementById('home-read').hidden=!read;
+    document.getElementById('home-reco').hidden=read;
+    if(read && !loaded){ loaded=true; load(); }
+  });
 })();
 
 /* ---------- 초기 렌더 ---------- */
