@@ -1061,6 +1061,12 @@ const BOOKMAP={}; BOOKS.forEach(g=>g.list.forEach(b=>BOOKMAP[b[0]]={k:b[1],c:b[2
   const readHead=document.getElementById('readHead'), readBody=document.getElementById('readBody');
   const readActions=document.getElementById('readActions'), readSelInfo=document.getElementById('readSelInfo');
   let cur={id:'jo',ch:1}, cache={}, anchor=null, selA=null, selB=null;
+  function clean(s){ return String(s||'')
+    .replace(/&#x([0-9a-f]+);/gi,(_,h)=>String.fromCharCode(parseInt(h,16)))
+    .replace(/&#(\d+);/g,(_,d)=>String.fromCharCode(+d))
+    .replace(/&quot;/gi,'"').replace(/&apos;/gi,"'")
+    .replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&amp;/gi,'&')
+    .replace(/`/g,'‘'); }
   BOOKS.forEach(g=>{ const og=document.createElement('optgroup'); og.label=g.t;
     g.list.forEach(b=>{ const o=document.createElement('option'); o.value=b[0]; o.textContent=b[1]; og.appendChild(o); });
     bookSel.appendChild(og); });
@@ -1087,7 +1093,7 @@ const BOOKMAP={}; BOOKS.forEach(g=>g.list.forEach(b=>BOOKMAP[b[0]]={k:b[1],c:b[2
     readStatus.textContent='불러오는 중…'; readCard.hidden=true; readActions.hidden=true;
     try{ const d=await fetchBook(cur.id); const vs=(d.chapters&&d.chapters[cur.ch-1])||[];
       readHead.textContent=`${BOOKMAP[cur.id].k} ${cur.ch}장 · 개역한글판`;
-      readBody.innerHTML=vs.map((t,i)=>`<div class="rv" data-v="${i+1}"><b>${i+1}</b>${esc(t)}</div>`).join('');
+      readBody.innerHTML=vs.map((t,i)=>`<div class="rv" data-v="${i+1}"><b>${i+1}</b>${esc(clean(t))}</div>`).join('');
       readBody.querySelectorAll('.rv').forEach(el=>el.onclick=()=>tap(+el.dataset.v));
       readCard.hidden=false; readStatus.textContent=''; clearSel();
     }catch(e){ readStatus.textContent='본문을 불러오지 못했어요(인터넷 확인). 잠시 후 다시 시도해주세요.'; }
@@ -1103,7 +1109,7 @@ const BOOKMAP={}; BOOKS.forEach(g=>g.list.forEach(b=>BOOKMAP[b[0]]={k:b[1],c:b[2
   document.getElementById('shareTextBtn').onclick=()=>{ if(selA==null) return;
     const k=BOOKMAP[cur.id].k, a=Math.min(selA,selB), b=Math.max(selA,selB);
     const vs=(cache[cur.id]&&cache[cur.id].chapters&&cache[cur.id].chapters[cur.ch-1])||[];
-    const items=[]; for(let v=a;v<=b;v++){ if(vs[v-1]) items.push({ref:`${k} ${cur.ch}:${v}`,text:vs[v-1]}); }
+    const items=[]; for(let v=a;v<=b;v++){ if(vs[v-1]) items.push({ref:`${k} ${cur.ch}:${v}`,text:clean(vs[v-1])}); }
     DB.set('shareText',{d:fmtDay(new Date()),items}); toast(`본문 ${items.length}절을 나눔에 담았어요`); };
   let loaded=false;
   document.querySelectorAll('.seg-b').forEach(b=>b.onclick=()=>{
